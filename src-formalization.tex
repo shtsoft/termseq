@@ -1,1 +1,918 @@
+\subsection{Producer-Biased Calculus (PBC)}
 
+\subsubsection{Syntax}
+
+The syntax is defined in \cref{fig:PBC:syntax}.
+
+\begin{figure}[H]
+    \setlength{\abovedisplayskip}{0pt}
+    \setlength{\belowdisplayskip}{0pt}
+    \setlength{\abovedisplayshortskip}{0pt}
+    \setlength{\belowdisplayshortskip}{0pt}
+  \[
+  \begin{array}{lclr}
+    \multicolumn{4}{r}{
+      \mathcal{C} \in \textsc{Prd}
+      \quad
+      \mathcal{D} \in \textsc{Con}
+      \quad
+      T \in \textsc{Type}
+      \mspace{60mu}
+      \emph{Names}
+    }
+    \\
+    \multicolumn{4}{r}{
+      x \in \textsc{Var}
+      \mspace{60mu}
+      \emph{Variables}
+    }
+    \\[0.5cm]
+
+    % Contexts
+    \Gamma
+    & \Coloneqq
+    & \varnothing\ |\ \Gamma, x : T
+    & \emph{Context}
+    \\[0.5cm]
+
+    % Terms
+    t
+    & \Coloneqq
+    & x
+    & \emph{Variable}
+    \\
+    & | & \mathcal{C}\overline{t}
+    & \emph{Producer Application}
+    \\
+    & | & t.\mathcal{D}\overline{t}
+    & \emph{Consumer Application}
+    \\[0.5cm]
+
+    % Consumer Functions
+    cfun
+    & \Coloneqq
+    & \define\
+      T.\mathcal{D}\Gamma : T
+      := \match\
+         \overline{\mathcal{C}\Gamma \Rightarrow t}
+    & \emph{Consumer Function}
+    \\[0.5cm]
+
+    % Producer Functions
+    pfun
+    & \Coloneqq
+    & \define\
+      \mathcal{C}\Gamma : T
+      := \comatch\
+         \overline{\mathcal{D}\Gamma \Rightarrow t}
+    & \emph{Producer Function}
+    \\[0.5cm]
+
+    % Type Declarations
+    D
+    & \Coloneqq
+    & \data\
+      T\
+      \where\
+      \overline{\mathcal{C}\Gamma : T}\
+      \with\
+      \overline{cfun}
+    & \emph{Data Declaration}
+    \\
+    & | & \codata\
+          T\
+          \where\
+          \overline{T.\mathcal{D}\Gamma : T}\
+          \with\
+          \overline{pfun}
+    & \emph{Codata Declaration}
+    \\[0.5cm]
+
+    % Programs
+    P
+    & \Coloneqq
+    & \overline{D}
+    & \emph{Program}
+    \\[0.5cm]
+  \end{array}
+  \]
+  \caption{Syntax PBC.}
+  \label{fig:PBC:syntax}
+\end{figure}
+
+\subsubsection{Terms}
+
+\begin{prooftree}
+  \AxiomC{}
+  \RightLabel{\textsc{Tm-Var}}
+  \UnaryInfC{$\typetmpbc{\Gamma, x : T}{x}{T}$}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$
+    \mathcal{C}\Gamma_{\mathcal{C}}
+    \in
+    \textsc{Prd}(T)
+  $}
+  \AxiomC{$
+    \forall i,\
+    \typetmpbc
+      {\Gamma}
+      {t_{i}}
+      {\Gamma_{\mathcal{C}}(i)}
+  $}
+  \RightLabel{\textsc{Tm-Producer-App}}
+  \BinaryInfC{$
+    \typetmpbc
+      {\Gamma}
+      {\mathcal{C}\overline{t_{i}}}
+      {T}
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$
+    (\mathcal{D}\Gamma_{\mathcal{D}}, T^{\prime})
+    \in
+    \textsc{Con}(T)
+  $}
+  \AxiomC{$
+    \forall i,\
+    \typetmpbc
+      {\Gamma}
+      {t_{i}}
+      {\Gamma_{\mathcal{D}}(i)}
+  $}
+  \AxiomC{$\Gamma \vdash t : T$}
+  \RightLabel{\textsc{Tm-Consumer-App}}
+  \TrinaryInfC{$
+    \typetmpbc
+      {\Gamma}
+      {t.\mathcal{D}\overline{t_{i}}}
+      {T^{\prime}}
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\subsubsection{Well-formedness}
+
+\begin{prooftree}
+  \AxiomC{$
+    \forall i,\
+    \typetmpbc{\Gamma, \Gamma_{i}}{t_{i}}{T^{\prime}}
+  $}
+  \RightLabel{\textsc{Wf-CFun}}
+  \UnaryInfC{$
+    \typewf{
+      \define\
+      T.\mathcal{D}\Gamma : T^{\prime}
+      := \match\
+         \overline{
+           \mathcal{C}_{i}\Gamma_{i}
+           \Rightarrow
+           t_{i}
+         }
+    }
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$
+    \forall i,\
+    \typetmpbc{\Gamma, \Gamma_{i}}{t_{i}}{T_{i}}
+  $}
+  \RightLabel{\textsc{Wf-PFun}}
+  \UnaryInfC{$
+    \typewf{
+      \define\
+      \mathcal{C}\Gamma : T
+      := \comatch\
+         \overline{
+           \mathcal{D}_{i}\Gamma_{i}
+           \Rightarrow
+           t_{i}
+         }
+    }
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$\typewf{\overline{cfun}}$}
+  \RightLabel{\textsc{Wf-Data}}
+  \UnaryInfC{$
+    \typewf{
+      \data\
+      T\
+      \where\
+      \overline{\mathcal{C}_{i}\Gamma_{i} : T}\
+      \with\
+      \overline{cfun}
+    }
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$\typewf{\overline{pfun}}$}
+  \RightLabel{\textsc{Wf-Codata}}
+  \UnaryInfC{$
+    \typewf{
+      \codata\
+      T\
+      \where\
+      \overline{T.\mathcal{D}_{i}\Gamma_{i} : T_{i}}\
+      \with\
+      \overline{pfun}
+    }
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\textsc{Wf-Prog-Nil}}
+    \UnaryInfC{$\typewf{()}$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\typewf{P}$}
+    \AxiomC{$\typewf{D}$}
+    \RightLabel{\textsc{Wf-Prog-Cons}}
+    \BinaryInfC{$\typewf{(P,D)}$}
+  \end{prooftree}
+\end{minipage}
+
+\subsubsection{Operational Semantics}
+
+\[
+  \begin{array}{lclr} 
+    % Values
+    v
+    & \Coloneqq
+    & \mathcal{C}\overline{v}
+    & \emph{Value}
+    \\[0.5cm]
+
+    % Evaluation Contexts
+    ctx
+    & \Coloneqq
+    & \square
+    \\
+    & | & \mathcal{C}(\overline{v},ctx,\overline{t})
+    \\
+    & | & ctx.\mathcal{D}\overline{t}
+    \\
+    & | & v.\mathcal{D}(\overline{v},ctx,\overline{t})
+    & \emph{Evaluation Context}
+    \\[0.5cm]
+  \end{array}
+\]
+
+\begin{prooftree}
+  \AxiomC{$
+    \mathcal{C}\Delta
+    \Rightarrow
+    t
+    \in
+    \textsc{Cases}(\mathcal{D})
+  $}
+  \RightLabel{\textsc{E-Match}}
+  \UnaryInfC{$
+    \mathcal{C}\overline{v}.\mathcal{D}\overline{v}^{\prime}
+    \evaluatesto
+    t[\overline{v}][\overline{v}^{\prime}]
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$
+    \mathcal{D}\Delta
+    \Rightarrow
+    t
+    \in
+    \textsc{Cocases}(\mathcal{C})
+  $}
+  \RightLabel{\textsc{E-Comatch}}
+  \UnaryInfC{$
+    \mathcal{C}\overline{v}.\mathcal{D}\overline{v}^{\prime}
+    \evaluatesto
+    t[\overline{v}][\overline{v}^{\prime}]
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$t \evaluatesto t^{\prime}$}
+  \RightLabel{\textsc{E-Cong}}
+  \UnaryInfC{$ctx[t] \evaluatesto ctx[t^{\prime}]$}
+\end{prooftree}
+
+\subsubsection{Type Safety}
+
+\begin{theorem}[Preservation]
+  If $\typetmpbc{}{t}{T}$, and $t \evaluatesto t^{\prime}$, then $\typetmpbc{}{t^{\prime}}{T}$.
+\end{theorem}
+
+\begin{theorem}[Progress]
+  If $\typetmpbc{}{t}{T}$, then either $t$ is a value or $t \evaluatesto t^{\prime}$ for some $t^{\prime}$.
+\end{theorem}
+
+\subsection{Symmetric Calculus (SC)}
+
+In the formalization of the language we use an orientation parameter $\pol \in \{ \polprd,\polcon \}$ and functions
+
+\begin{align*}
+  \widehat{\polprd}
+  :=\ \polcon
+  \quad
+  \widehat{\polcon}
+  :=\ \polprd
+\end{align*}
+
+\subsubsection{Syntax}
+
+The syntax is defined in \cref{fig:SC:syntax}.
+
+\begin{figure}[H]
+    \setlength{\abovedisplayskip}{0pt}
+    \setlength{\belowdisplayskip}{0pt}
+    \setlength{\abovedisplayshortskip}{0pt}
+    \setlength{\belowdisplayshortskip}{0pt}
+  \[
+  \begin{array}{lclr}
+    \multicolumn{4}{r}{
+      \mathcal{X} \in \textsc{App}
+      \quad
+      T \in \textsc{Type}
+      \mspace{60mu}
+      \emph{Names}
+    }
+    \\
+    \multicolumn{4}{r}{
+      x \in \textsc{Var}
+      \mspace{60mu}
+      \emph{Variables}
+    }
+    \\[0.5cm]
+
+    % Contexts
+    \Gamma
+    & \Coloneqq
+    & \varnothing\ |\ \Gamma, x \prd T\ |\ \Gamma, x \con T
+    & \emph{Context}
+    \\[0.5cm]
+
+    % Terms
+    t
+    & \Coloneqq
+    & x\ |\ \mathcal{X}\overline{t}
+    & \emph{Term}
+    \\[0.5cm]
+
+    % Commands
+    c
+    & \Coloneqq
+    & t \mkCmd t\ |\ \Done
+    & \emph{Command}
+    \\[0.5cm]
+
+    % o-Functions
+    fun^{\pol}
+    & \Coloneqq
+    & \define\
+      \mathcal{X}\Gamma \prdcon T
+      := \match\
+         \overline{\mathcal{X}\Gamma \Rightarrow c}
+    & \emph{$\pol$-Function}
+    \\[0.5cm]
+
+    % o-Type Declarations
+    D^{\pol}
+    & \Coloneqq
+    & \pol\
+      \type\
+      T\
+      \where\
+      \overline{\mathcal{X}\Gamma}\
+      \with\
+      \overline{fun^{\flip{\pol}}}
+    & \emph{$\pol$-Type Declaration}
+    \\[0.5cm]
+
+    % Programs
+    P
+    & \Coloneqq
+    & \varnothing\ |\ P, D^{\polprd}\ |\ P, D^{\polcon}
+    & \emph{Program}
+    \\[0.5cm]
+  \end{array}
+  \]
+  \caption{Syntax SC.}
+  \label{fig:SC:syntax}
+\end{figure}
+
+\subsubsection{Terms}
+
+\begin{prooftree}
+  \AxiomC{}
+  \RightLabel{\textsc{Tm-$\pol$-Var}}
+  \UnaryInfC{$\typetm{\Gamma, x \prdcon T}{x}{T}$}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$
+    \mathcal{X}\Gamma_{\mathcal{X}}
+    \in
+    \pol\textsc{-App}(T)
+  $}
+  \AxiomC{$
+    \forall i,\
+    \typetm
+      {\Gamma}
+      {t_{i}}
+      {\Gamma_{\mathcal{X}}(i)}
+  $}
+  \RightLabel{\textsc{Tm-$\pol$-App}}
+  \BinaryInfC{$
+    \typetm
+      {\Gamma}
+      {\mathcal{X}\overline{t_{i}}}
+      {T}
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\subsubsection{Commands}
+
+\begin{prooftree}
+  \AxiomC{$\typetmprd{\Gamma}{t_{1}}{T}$}
+  \AxiomC{$\typetmcon{\Gamma}{t_{2}}{T}$}
+  \RightLabel{\textsc{Cmd-Cut}}
+  \BinaryInfC{$\typecmd{\Gamma}{t_{1} \mkCmd t_{2}}$}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{}
+  \RightLabel{\textsc{Cmd-Done}}
+  \UnaryInfC{$\typecmd{\Gamma}{\Done}$}
+\end{prooftree}
+
+\subsubsection{Well-formedness}
+
+\begin{prooftree}
+  \AxiomC{$
+    \forall i,\
+    \typecmd{\Gamma, \Gamma_{i}}{c_{i}}
+  $}
+  \RightLabel{\textsc{Wf-$\pol$-Fun}}
+  \UnaryInfC{$
+    \typewf{
+      \define\
+      \mathcal{X}\Gamma \prdcon T
+      := \match\
+         \overline{
+           \mathcal{X}_{i}\Gamma_{i}
+           \Rightarrow
+           c_{i}
+         }
+    }
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$\typewf{\overline{fun^{\flip{\pol}}}}$}
+  \RightLabel{\textsc{Wf-$\pol$-type}}
+  \UnaryInfC{$
+    \typewf{
+      \pol\
+      \type\
+      T\
+      \where\
+      \overline{\mathcal{X}_{i}\Gamma_{i}}\
+      \with\
+      \overline{fun^{\flip{\pol}}}
+    }
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\textsc{Wf-Prog-Nil}}
+    \UnaryInfC{$\typewf{()}$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\typewf{P}$}
+    \AxiomC{$\typewf{D^{\pol}}$}
+    \RightLabel{\textsc{Wf-Prog-Cons}}
+    \BinaryInfC{$\typewf{(P,D^{\pol})}$}
+  \end{prooftree}
+\end{minipage}
+
+\subsubsection{Operational Semantics}
+\begin{prooftree}
+  \AxiomC{$
+    \mathcal{X}_{i}\Gamma_{i}
+    \Rightarrow
+    c_{i}
+    \in
+    \polprd\textsc{-Cases}(\mathcal{X})
+  $}
+  \RightLabel{\textsc{E-$\polprd$-Cut}}
+  \UnaryInfC{$
+    \left(
+      \mathcal{X}
+      \overline{t}
+      \mkCmd
+      \mathcal{X}_{i}
+      \overline{t_{i}}
+    \right)
+    \evaluatesto_{\cmd}
+    c_{i}
+    [\overline{t}]
+    [\overline{t_{i}}]
+  $}
+\end{prooftree}
+\vspace*{0.3cm}
+
+\begin{prooftree}
+  \AxiomC{$
+    \mathcal{X}_{i}\Gamma_{i}
+    \Rightarrow
+    c_{i}
+    \in
+    \polcon\textsc{-Cases}(\mathcal{X})
+  $}
+  \RightLabel{\textsc{E-$\polcon$-Cut}}
+  \UnaryInfC{$
+    \left(
+      \mathcal{X}_{i}
+      \overline{t_{i}}
+      \mkCmd
+      \mathcal{X}
+      \overline{t}
+    \right)
+    \evaluatesto_{\cmd}
+    c_{i}
+    [\overline{t}]
+    [\overline{t_{i}}]
+  $}
+\end{prooftree}
+
+\subsubsection{Type Safety}
+
+\begin{theorem}[Preservation]
+  If $\typecmd{}{c}$, and $c \evaluatesto_{\cmd} c^{\prime}$, then $\typecmd{}{c^{\prime}}$.
+\end{theorem}
+
+\begin{theorem}[Progress]
+  If $\typecmd{}{c}$, then either $c$ is $\Done$ or $c \evaluatesto_{\cmd} c^{\prime}$ for some $c^{\prime}$.
+\end{theorem}
+
+\subsection{Translation from PBC to SC}
+
+$\mathfrak{T}$ for types ... and $\mathfrak{S}$ for terms ...
+
+\subsubsection{Properties}
+
+\begin{lemma}[...]
+  If ...
+\end{lemma}
+
+\begin{theorem}[...]
+  If ...
+\end{theorem}
+
+\subsection{Termination Analysis}
+
+TODO:
+
+\begin{enumerate}
+  \item Formalize type-graph stuff
+  \item Formalize call-graph stuff
+  \item Formulate termination analysis
+  \item Prove termination analysis sound
+\end{enumerate}
+
+\subsection{TEMPORARY-SECTION: Second-Order Lambda-Calculus With Recursion (RLC2)}
+
+This section is the legacy from a previous but unsuccessful attempt using RLC2.
+
+\begin{figure}[H]
+    \setlength{\abovedisplayskip}{0pt}
+    \setlength{\belowdisplayskip}{0pt}
+    \setlength{\abovedisplayshortskip}{0pt}
+    \setlength{\belowdisplayshortskip}{0pt}
+  \[
+  \begin{array}{lclr}
+    \multicolumn{4}{r}{
+      x \in \textsc{Term}
+      \quad
+      X \in \textsc{Type}
+      \mspace{60mu}
+      \emph{Variables}
+    }
+    \\[0.5cm]
+
+    % Contexts
+    \Gamma
+    & \Coloneqq
+    & \varnothing\ |\ \Gamma, x : T
+    & \emph{Context}
+    \\[0.5cm]
+
+    % Terms
+    t
+    & \Coloneqq
+    & x\ |\ \mathcal{X}\overline{t}
+    & \emph{Term}
+    \\[0.5cm]
+
+    % Constants
+    c
+    & \Coloneqq
+    & \text{in}\ |\ \text{out}\ |\ \text{in$^{-1}$}\ |\ \text{out$^{-1}$}
+    & \emph{Constant}
+    \\[0.5cm]
+
+    % Terms
+    s,t
+    & \Coloneqq
+    & x
+    & \emph{Term Variable}
+    \\
+    & | & \lambda x : T.t
+    & \emph{Term Abstraction}
+    \\
+    & | & t \, t
+    & \emph{Term Application}
+    \\
+    & | & \Lambda X.t
+    & \emph{Type Abstraction}
+    \\
+    & | & t \, T
+    & \emph{Type Application}
+    \\
+    & | & \rho x : T.t
+    & \emph{?}
+    \\
+    & | & c(X,T)
+    & \emph{?}
+    \\[0.5cm]
+
+    % Types
+    S,T
+    & \Coloneqq
+    & X
+    & \emph{Type Variable}
+    \\
+    & | & T \to T
+    & \emph{Function Type}
+    \\
+    & | & \Pi X.T
+    & \emph{Universal Type}
+    \\
+    & | & \mu X.T
+    & \emph{Recursive Type}
+    \\
+    & | & \nu X.T
+    & \emph{Corecursive Type}
+    \\[0.5cm]
+  \end{array}
+  \]
+  \caption{Syntax RLC2}
+  \label{fig:RLC2:syntax}
+\end{figure}
+
+To ensure that recursive and corecursive types really exist we introduce a simple kinding as follows
+
+\vspace*{0.3cm}
+\begin{minipage}{0.15\textwidth}
+  \begin{prooftree}
+    \AxiomC{}
+    \RightLabel{\textsc{$\ast$-Var}}
+    \UnaryInfC{$X : \ast$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$T_{1} : \ast$}
+    \AxiomC{$T_{2} : \ast$}
+    \RightLabel{\textsc{$\ast$-Fun}}
+    \BinaryInfC{$T_{1} \to T_{2} : \ast$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$T : \ast$}
+    \RightLabel{\textsc{$\ast$-Uni}}
+    \UnaryInfC{$\Pi X.T : \ast$}
+  \end{prooftree}
+\end{minipage}
+
+\vspace*{0.3cm}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$T : \ast$}
+    \AxiomC{$\text{Pos}(X,T)$}
+    \RightLabel{\textsc{$\ast$-Rec}}
+    \BinaryInfC{$\mu X.T : \ast$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree} 
+    \AxiomC{$T : \ast$}
+    \AxiomC{$\text{Pos}(X,T)$}
+    \RightLabel{\textsc{$\ast$-Corec}}
+    \BinaryInfC{$\nu X.T : \ast$}
+  \end{prooftree}
+\end{minipage}
+\vspace*{0.3cm}
+
+Here $\text{Pos}(X,T)$ means that $X$ is contained only strictly positive in $T$.
+Strictly positive types $T$ w.r.t. $X$ are those which do not contain $X$ in the left subtree of any $\to$.
+
+The typing rules for System F are standard:
+The rules for the simply typed lambda calculus
+
+\vspace*{0.3cm}
+\begin{minipage}{0.2\textwidth}
+  \begin{prooftree}
+    \AxiomC{$x : T \in \Gamma$}
+    \RightLabel{\textsc{Tm-Var}}
+    \UnaryInfC{$\Gamma \vdash x : T$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.375\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\Gamma,x : T_{1} \vdash t : T_{2}$}
+    \RightLabel{\textsc{Tm-Abs}}
+    \UnaryInfC{$\Gamma \vdash \lambda x : T_{1}.t : T_{1} \to T_{2}$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\Gamma \vdash t : T_{1} \to T_{2}$}
+    \AxiomC{$\Gamma \vdash s : T_{1}$}
+    \RightLabel{\textsc{Tm-App}}
+    \BinaryInfC{$\Gamma \vdash t \, s : T_{2}$}
+  \end{prooftree}
+\end{minipage}
+
+\vspace*{0.3cm}
+together with the rules for abstraction of types and application to types
+
+\vspace*{0.3cm}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\Gamma,X \vdash t : T$}
+    \RightLabel{\textsc{Ty-Abs}}
+    \UnaryInfC{$\Gamma \vdash \Lambda X.t : \Pi X.T$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\Gamma \vdash t : \Pi X.T$}
+    \AxiomC{$S : \ast$}
+    \RightLabel{\textsc{Ty-App}}
+    \BinaryInfC{$\Gamma \vdash t \, S : T [S]$}
+  \end{prooftree}
+\end{minipage}
+
+\vspace*{0.3cm}
+The rule for general recursion:
+
+\vspace*{0.3cm}
+\begin{prooftree}
+  \AxiomC{$\Gamma, x : S \to T \vdash t : S \to T$}
+  \RightLabel{\textsc{$\rho$-Abs}}
+  \UnaryInfC{$\rho x : S \to T. t : S \to T$}
+\end{prooftree}
+
+\vspace*{0.3cm}
+The rules for $\mu$-abstractions $\mu X.T$ and $\nu$-abstrations $\nu Y.T$ are:
+
+\vspace*{0.3cm}
+\begin{minipage}{0.45\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\mu X.T : \ast$}
+    \RightLabel{\textsc{$\mu$-Intro}}
+    \UnaryInfC{$\text{in}(X,T) : T[\mu X.T] \to \mu X.T$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\nu X.T : \ast$}
+    \RightLabel{\textsc{$\nu$-Intro}}
+    \UnaryInfC{$\text{out}(X,T) : \nu X.T \to T[\nu X.T]$}
+  \end{prooftree}
+\end{minipage}
+
+\vspace*{0.3cm}
+\begin{minipage}{0.45\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\mu X.T : \ast$}
+    \RightLabel{\textsc{$\mu$-Intro'}}
+    \UnaryInfC{$\text{in}^{-1}(X,T) : \mu X.T \to T[\mu X.T]$}
+  \end{prooftree}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+  \begin{prooftree}
+    \AxiomC{$\nu X.T : \ast$}
+    \RightLabel{\textsc{$\nu$-Intro'}}
+    \UnaryInfC{$\text{out}^{-1}(X,T) : T[\nu X.T] \to \nu X.T$}
+  \end{prooftree}
+\end{minipage}
+
+\vspace*{0.3cm}
+For the sake of simplicity we sugar the language with binary products and sums
+
+\begin{minipage}{0.45\textwidth}
+  \begin{align*}
+    S \times T
+    &:= \Pi X. (S \to T \to X) \to X
+    \\
+    (s,t)
+    &:= \Lambda X. \lambda (f : S \to T \to X). f \, s \, t
+    \\
+    \text{pr}_{1}
+    &:= \lambda p : S \times T. p \, S \, (\lambda x. \lambda y. x)
+    \\
+    \text{pr}_{2}
+    &:= \lambda p : S \times T. p \, T \, (\lambda x. \lambda y. y)
+  \end{align*}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+  \begin{align*}
+    S + T
+    &:= \Pi X. (S \to X) \to (T \to X) \to X
+    \\
+    \text{in}_{1}
+    &:= \lambda x : S. \Lambda X. \lambda f : S \to X. \lambda g :T \to X. f \, x
+    \\
+    \text{in}_{2}
+    &:= \lambda x : T. \Lambda X. \lambda f : S \to X. \lambda g :T \to X. g \, x
+    \\
+    f + g
+    &:= \lambda c : S + T. c \, T' \, f \, g
+  \end{align*}
+\end{minipage}
+
+\vspace*{0.3cm}
+This easily generalizes to $n$-ary products and sums.
+
+\subsubsection{Mendler-Style}
+
+\vspace*{0.3cm}
+What makes an inductive type \enquote{Mendler-Style} is replacing $T[Y] \to Y$ by $\Pi X.(X \to Y) \to T \to Y$ in the ordinary recursion principle which is justified since these types are isomorphic by Yoneda.
+Of course, there are dual considerations for coinductive types.
+So:
+
+\vspace*{0.3cm}
+\begin{prooftree}
+  \AxiomC{$\mu X.T : \ast$}
+  \RightLabel{\textsc{$\mu$-Rec}}
+  \UnaryInfC{$\text{rec}(X,T) : \Pi Y.(\Pi X.(X \to Y) \to T \to Y) \to \mu X.T \to Y$}
+\end{prooftree}
+
+\vspace*{0.3cm}
+\begin{prooftree}
+  \AxiomC{$\nu X.T : \ast$}
+  \RightLabel{\textsc{$\nu$-Rec}}
+  \UnaryInfC{$\text{corec}(X,T) : \Pi Y.(\Pi X.(Y \to X) \to Y \to T) \to Y \to \nu X.T$}
+\end{prooftree}
+
+Reduction:
+
+\vspace*{0.3cm}
+\begin{minipage}{0.25\textwidth}
+  \begin{enumerate}
+    \item[(1)] $(\lambda x : T.t) s \evaluatesto t[s]$
+    \item[(2)] $(\lambda x : T.t \, x) \evaluatesto t$
+  \end{enumerate}
+\end{minipage}
+\begin{minipage}{0.25\textwidth}
+  \begin{enumerate}
+    \item[(3)] $(\Lambda X.t) S \evaluatesto t[S]$
+    \item[(4)] $(\lambda X.t \, X) \evaluatesto t$
+  \end{enumerate}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+  \begin{enumerate}
+    \item[(5)] $\text{rec} \, S \, s \, (\text{in} \, t) \evaluatesto s \, \mu X.T \, (\text{rec} \, S \, s) \, t$
+    \item[(6)] $\text{out} \, (\text{corec} \, S \, s \, \, t) \evaluatesto s \, \nu X.T \, (\text{corec} \, S \, s) \, t$
+  \end{enumerate}
+\end{minipage}

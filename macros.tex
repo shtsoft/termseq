@@ -1,1 +1,89 @@
+% Environments
+\newenvironment{codealign}{\footnotesize\csname align*\endcsname}{\csname endalign*\endcsname}
 
+% Colors
+\definecolor{colpol}{rgb}{0.6,0.6,0.7}
+\definecolor{colprd}{rgb}{0.5,0.0,0.5}
+\definecolor{colcon}{rgb}{0.0,0.5,0.5}
+\definecolor{coltype}{rgb}{0.1,0.1,0.1}
+\definecolor{meta}{rgb}{0.2,0.2,0.2}
+
+\newcommand{\colpol}[1]{\ensuremath{\textcolor{colpol}{#1}}}
+\newcommand{\colprd}[1]{\ensuremath{\textcolor{colprd}{#1}}}
+\newcommand{\colcon}[1]{\ensuremath{\textcolor{colcon}{#1}}}
+\newcommand{\coltype}[1]{\ensuremath{\textcolor{coltype}{#1}}}
+\newcommand{\colmeta}[1]{\ensuremath{\textcolor{meta}{#1}}}
+
+% Formalization-Commands
+\newcommand{\type}{\ensuremath{\mathbf{type}}}
+\newcommand{\data}{\ensuremath{\mathbf{data}}}
+\newcommand{\codata}{\ensuremath{\mathbf{codata}}}
+\newcommand{\where}{\ensuremath{\mathbf{where}}}
+\newcommand{\with}{\ensuremath{\mathbf{with}}}
+\newcommand{\define}{\ensuremath{\mathbf{def}}}
+\newcommand{\match}{\ensuremath{\mathbf{match}}}
+\newcommand{\comatch}{\ensuremath{\mathbf{comatch}}}
+\newcommand{\Done}{\ensuremath{\mathbf{Done}}}
+
+\newcommand*{\flip}[1]{\hat{#1}}
+
+\newcommand{\wrap}[2][]{\,\overset{\textit{\tiny#2}}{\colon}#1\,}
+\newcommand{\prd}{
+  \wrap{\raisebox{0pt}{\colprd{\rule{0pt}{3pt}\smash{\mathfrak{prd}}}}}
+}
+\newcommand{\prdcon}{
+  \wrap{\raisebox{0pt}{\ensuremath{\rule{0pt}{3pt}\smash{\colpol{o}}}}}
+}
+\newcommand{\con}{
+  \wrap{\rule{0pt}{1pt}\colcon{\mathfrak{con}}}
+}
+
+\newcommand{\pol}{\colpol{o}}
+\newcommand{\polprd}{\colprd{\mathfrak{prd}}}
+\newcommand{\polcon}{\colcon{\mathfrak{con}}}
+
+\newcommand{\mkCmd}{\mathrel{\gg}}
+
+\newcommand{\cmd}{\ensuremath{\mathsf{cmd}}}
+
+\newcommand{\typetmpbc}[3]{
+  \ensuremath{#1\ \colmeta{\vdash}\ #2\ \colmeta{:}\ #3}
+}
+\newcommand{\typetm}[3]{
+  \ensuremath{#1\ \colmeta{\vdash}\ #2\ \colmeta{\prdcon}\ #3}
+}
+\newcommand{\typetmprd}[3]{
+  \ensuremath{#1\ \colmeta{\vdash}\ #2\ \colmeta{\prd}\ #3}
+}
+\newcommand{\typetmcon}[3]{
+  \ensuremath{#1\ \colmeta{\vdash}\ #2\ \colmeta{\con}\ #3}
+}
+\newcommand{\typecmd}[2]{
+  \ensuremath{#1\ \colmeta{\vdash}\ #2\ \colmeta{:} \cmd}
+}
+\newcommand{\typewf}[1]{
+  \ensuremath{\colmeta{\vdash}\ #1\ \colmeta{\text{Ok}}}
+}
+
+\newcommand{\evaluatesto}{\ensuremath{\triangleright}}
+\newcommand{\evaluatestoinv}{\ensuremath{\triangleleft}}
+
+% Programming-Commands
+\newcommand{\Nat}{\coltype{\mathbb{N}}}
+\newcommand{\Zero}{\colprd{\text{Zero}}}
+\newcommand{\Succ}{\colprd{\text{Succ}}}
+\newcommand{\plus}{\colcon{\text{plus}}}
+\newcommand{\onetwo}{\colcon{\text{onetwo}}}
+\newcommand{\sub}{\colcon{\text{sub}}}
+\newcommand{\subaux}{\colcon{\text{subaux}}}
+
+\newcommand{\FunNatNat}{\text{Fun}\coltype{\mathbb{N}}\coltype{\mathbb{N}}}
+\newcommand{\Apply}{\colcon{\text{Apply}}}
+\newcommand{\id}{\colprd{\text{id}}}
+
+\newcommand{\StreamNat}{\textsc{Stream}\coltype{\mathbb{N}}}
+\newcommand{\Head}{\colcon{\text{Head}}}
+\newcommand{\Tail}{\colcon{\text{Tail}}}
+\newcommand{\const}{\colprd{\text{const}}}
+
+\newcommand{\T}{\coltype{T}}
