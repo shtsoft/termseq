@@ -435,7 +435,20 @@ The syntax is defined in \cref{fig:SC:syntax}.
   $}
   \AxiomC{$
     \forall i,\
-    \typetm
+    \textbf{if}
+    \,
+    \polprd = \textsc{Orient}(\Gamma_{\mathcal{X}}(i))
+    \,
+    \textbf{then}
+    \,
+    \typetmprd
+      {\Gamma}
+      {t_{i}}
+      {\Gamma_{\mathcal{X}}(i)}
+    \,
+    \textbf{else}
+    \,
+    \typetmcon
       {\Gamma}
       {t_{i}}
       {\Gamma_{\mathcal{X}}(i)}
@@ -517,7 +530,7 @@ The syntax is defined in \cref{fig:SC:syntax}.
   \begin{prooftree}
     \AxiomC{$\typewf{P}$}
     \AxiomC{$\typewf{D^{\pol}}$}
-    \RightLabel{\textsc{Wf-Prog-Cons}}
+    \RightLabel{\textsc{Wf-$\pol$-Prog-Cons}}
     \BinaryInfC{$\typewf{(P,D^{\pol})}$}
   \end{prooftree}
 \end{minipage}
