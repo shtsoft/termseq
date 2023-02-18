@@ -69,21 +69,36 @@
 \newcommand{\evaluatestoinv}{\ensuremath{\triangleleft}}
 
 % Programming-Commands
+\newcommand{\Empty}{\coltype{\texttt{Empty}}}
+
 \newcommand{\Nat}{\coltype{\mathbb{N}}}
 \newcommand{\Zero}{\colprd{\text{Zero}}}
 \newcommand{\Succ}{\colprd{\text{Succ}}}
 \newcommand{\plus}{\colcon{\text{plus}}}
-\newcommand{\onetwo}{\colcon{\text{onetwo}}}
 \newcommand{\sub}{\colcon{\text{sub}}}
 \newcommand{\subaux}{\colcon{\text{subaux}}}
 
-\newcommand{\FunNatNat}{\text{Fun}\coltype{\mathbb{N}}\coltype{\mathbb{N}}}
+\newcommand{\FunNatNat}{\coltype{\texttt{Fun}\mathbb{N}\mathbb{N}}}
 \newcommand{\Apply}{\colcon{\text{Apply}}}
 \newcommand{\id}{\colprd{\text{id}}}
 
-\newcommand{\StreamNat}{\textsc{Stream}\coltype{\mathbb{N}}}
+\newcommand{\StreamNat}{\coltype{\texttt{Stream}\mathbb{N}}}
 \newcommand{\Head}{\colcon{\text{Head}}}
 \newcommand{\Tail}{\colcon{\text{Tail}}}
 \newcommand{\const}{\colprd{\text{const}}}
 
-\newcommand{\T}{\coltype{T}}
+\newcommand{\Curry}{\coltype{\texttt{Curry}}}
+\newcommand{\MakeExe}{\colprd{\text{MakeExe}}}
+\newcommand{\run}{\colcon{\text{run}}}
+
+\newcommand{\CoCurry}{\coltype{\texttt{CoCurry}}}
+\newcommand{\CoMakeExe}{\colprd{\text{CoMakeExe}}}
+\newcommand{\corun}{\colcon{\text{co\_run}}}
+
+\newcommand{\ContT}{\coltype{\texttt{Cont}T}}
+\newcommand{\Jump}{\colcon{\text{Jump}}}
+\newcommand{\ContCurry}{\coltype{\texttt{ContCurry}}}
+\newcommand{\runarg}{\colprd{\text{run\_arg}}}
+
+\newcommand{\CocontT}{\coltype{\texttt{Cocont}T}}
+\newcommand{\Cojump}{\colprd{\text{Jump}}}
