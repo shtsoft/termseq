@@ -26,14 +26,15 @@ The most important thing yet to do is coming up with a precise idea of how to pr
 
 Otherwise, besides what is said in the 'Authors:'-notes in the text, what we need next is
 
-- an introduction pitching the use cases
-  * partial evaluation
-  * Agda soundness
-  and the contributions
-  * translation from asymmetric to symmetric data/codata
-  * formualtion of strict positivity for symmetric data/codata
-  * formualtion of structural recursion for symmetric data/codata
-  * soundness of the termination analysis based on the size-change termination principle
+- an introduction pitching
+  * the use cases
+    + partial evaluation
+    + Agda soundness
+  * the contributions
+    + translation from asymmetric to symmetric data/codata
+    + formualtion of strict positivity for symmetric data/codata
+    + formualtion of structural recursion for symmetric data/codata
+    + soundness of the termination analysis based on the size-change termination principle
 - a full draft of the formalization by
   * adding text describing the language formalizations
   * formalizing the translation from asymmetric to symmetric data/codata
