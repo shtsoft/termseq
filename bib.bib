@@ -1,1 +1,71 @@
+@article{10.1145/373243.360210,
+author = {Lee, Chin Soon and Jones, Neil D. and Ben-Amram, Amir M.},
+title = {The Size-Change Principle for Program Termination},
+year = {2001},
+issue_date = {March 2001},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {36},
+number = {3},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/373243.360210},
+doi = {10.1145/373243.360210},
+abstract = {The "size-change termination" principle for a first-order functional language with well-founded data is: a program terminates on all inputs if every infinite call sequence (following program control flow) would cause an infinite descent in some data values.Size-change analysis is based only on local approximations to parameter size changes derivable from program syntax. The set of infinite call sequences that follow program flow and can be recognized as causing infinite descent is an ω-regular set, representable by a B\"{u}chi automaton. Algorithms for such automata can be used to decide size-change termination. We also give a direct algorithm operating on "size-change graphs" (without the passage to automata).Compared to other results in the literature, termination analysis based on the size-change principle is surprisingly simple and general: lexical orders (also called lexicographic orders), indirect function calls and permuted arguments (descent that is not in-situ) are all handled automatically and without special treatment, with no need for manually supplied argument orders, or theorem-proving methods not certain to terminate at analysis time.We establish the problem's intrinsic complexity. This turns out to be surprisingly high, complete for PSPACE, in spite of the simplicity of the principle. PSPACE hardness is proved by a reduction from Boolean program termination. An ineresting consequence: the same hardness result applies to many other analyses found in the termination and quasitermination literature.},
+journal = {SIGPLAN Not.},
+month = {jan},
+pages = {81–92},
+numpages = {12},
+keywords = {PSPACE-completeness, termination, program analysis, partial evaluation, omega automaton}
+}
 
+@article{10.1145/2858949.2784763,
+author = {Rendel, Tillmann and Trieflinger, Julia and Ostermann, Klaus},
+title = {Automatic Refunctionalization to a Language with Copattern Matching: With Applications to the Expression Problem},
+year = {2015},
+issue_date = {September 2015},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {50},
+number = {9},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/2858949.2784763},
+doi = {10.1145/2858949.2784763},
+abstract = {Defunctionalization and refunctionalization establish a correspondence between first-class functions and pattern matching, but the correspondence is not symmetric: Not all uses of pattern matching can be automatically refunctionalized to uses of higher-order functions. To remedy this asymmetry, we generalize from first-class functions to arbitrary codata. This leads us to full defunctionalization and refunctionalization between a codata language based on copattern matching and a data language based on pattern matching. We observe how programs can be written as matrices so that they are modularly extensible in one dimension but not the other. In this representation, defunctionalization and refunctionalization correspond to matrix transposition which effectively changes the dimension of extensibility a program supports. This suggests applications to the expression problem.},
+journal = {SIGPLAN Not.},
+month = {aug},
+pages = {269–279},
+numpages = {11},
+keywords = {Copattern Matching, Codata, Expression Problem, Defunctionalization, Uroboro, Refunctionalization}
+}
+
+@article{10.1017/S0956796801004191,
+title={A predicative analysis of structural recursion},
+volume={12},
+DOI={10.1017/S0956796801004191},
+number={1},
+journal={Journal of Functional Programming},
+publisher={Cambridge University Press},
+author={ABEL, ANDREAS and ALTENKIRCH, THORSTEN},
+year={2002},
+pages={1–41}
+}
+
+@InProceedings{10.1007/BFb0037116,
+author="Paulin-Mohring, Christine",
+editor="Bezem, Marc
+and Groote, Jan Friso",
+title="Inductive definitions in the system Coq rules and properties",
+booktitle="Typed Lambda Calculi and Applications",
+year="1993",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="328--345",
+abstract="In the pure Calculus of Constructions, it is possible to represent data structures and predicates using higher-order quantification. However, this representation is not satisfactory, from the point of view of both the efficiency of the underlying programs and the power of the logical system. For these reasons, the calculus was extended with a primitive notion of inductive definitions [8]. This paper describes the rules for inductive definitions in the system Coq. They are general enough to be seen as one formulation of adding inductive definitions to a typed lambda-calculus. We prove strong normalization for a subsystem of Coq corresponding to the pure Calculus of Constructions plus Inductive Definitions with only weak eliminations.",
+isbn="978-3-540-47586-6"
+}
+
+@inproceedings{Abel2002foetusT,
+title="foetus - Termination Checker for Simple Functional Programs",
+author="Andreas Abel",
+year="2002"
+}

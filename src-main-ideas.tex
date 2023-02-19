@@ -6,7 +6,7 @@ The natural deduction formulation is biased towards producers (that is, proofs) 
 This in particular means that one can translate semantic-preservingly from the producer-biased calculus to the symmetric calculus (\cref{sec:mainideas:calculi}).
 Hence a termination analysis of the latter does also apply to the former and it suffices to examine termination in the latter case.
 \\
-The idea for our termination analysis then is to instantiate the size-change termination principle (\cref{sec:mainideas:sctp}) with strict positivity (\cref{sec:mainideas:sp}) and structural recursion (\cref{sec:mainideas:sr}), mirroring the usual ones for data with pattern matching (\cite{pauline-mohring}, \cite{foetus} and \cite{abel-altenkirch}).
+The idea for our termination analysis then is to instantiate the size-change termination principle (\cref{sec:mainideas:sctp}) with strict positivity (\cref{sec:mainideas:sp}) and structural recursion (\cref{sec:mainideas:sr}), mirroring the usual ones for data with pattern matching (\cite{10.1007/BFb0037116}, \cite{Abel2002foetusT} and \cite{10.1017/S0956796801004191}).
 The soundness proof (\cref{sec:mainideas:sound}) leverages information which are implicit in the procuder-biased calculus but explicit in the symmetric calculus.
 \\
 In the following we discuss the ideas of the aformentioned cornerstones on an intuitive level before working out the details in \cref{sec:formalization}.
@@ -19,7 +19,7 @@ Let us first discuss the involved calculi and how to translate between them.
 
 \subsubsection{Producer-Biased Calculus (PBC)}
 
-The PBC is essentially the language presented in \cite{uroboro}.
+The PBC is essentially the language presented in \cite{10.1145/2858949.2784763}.
 One can consider it a subset of Agda.
 Typical examples can be found in \cref{fig:mainideas:PBC:type}.
 
@@ -286,7 +286,7 @@ for syntactically implicit control flow in the PBC.
 \label{sec:mainideas:sctp}
 
 The size change termination principle is a general approach to approxiamte a decision of termination for language constructs that operate on finitistically structured data.
-\cite{lee + jones + ben-amran} introduced it on the basis of a language with functions operating on a domain which is assumed to be well-founded w.r.t. some order relation $<$.
+\cite{10.1145/373243.360210} introduced it on the basis of a language with functions operating on a domain which is assumed to be well-founded w.r.t. some order relation $<$.
 The idea is that in any infinite sequence of function calls some function $f$ would have to occur infinitely often.
 But if in each pair of successive calls of $f$ in such a sequence the argument becomes smaller w.r.t. $<$, the sequence could not have been infinite in the first place.
 This is becasuse the arguments cannot decrease forever due to the well-foundedness of $<$.
@@ -692,11 +692,11 @@ If moreover the argument of the recursive call is a part of the actual function 
 This constitutes a rough definition of structural recursion.
 \\
 Essentially, it tells us that a way to decide if a recursion is structural is to chase argument sizes through the call graph of a program and check if the sizes decrease when going through cycles.
-In fact, \cite{foetus} develops a technique based on graphs, order relations and algebra doing that.
+In fact, \cite{Abel2002foetusT} develops a technique based on graphs, order relations and algebra doing that.
 It is applicable to languages with data and pattern matching and in the following we show how to also adapt it to the SC.
 \\
 \\
-First of all, applying \cite{foetus} necessarily requires order relations
+First of all, applying \cite{Abel2002foetusT} necessarily requires order relations
 \begin{enumerate}
   \item
     $t_{1} < t_{2}$: $t_{1}$ is structurally smaller than $t_{2}$
